@@ -8,6 +8,20 @@
 
 ***
 
+## 畫面截圖
+
+| 營運儀表板 | 客戶訂單管理 |
+| --- | --- |
+| ![營運儀表板](assets/screenshot-dashboard.png) | ![客戶訂單管理](assets/screenshot-orders.png) |
+
+| 客戶對帳單 | 客戶資料 |
+| --- | --- |
+| ![客戶對帳單](assets/screenshot-statements.png) | ![客戶資料](assets/screenshot-customers.png) |
+
+> 截圖為乾淨示範資料，實際使用以正式安裝版為準。
+
+***
+
 ## 功能特色
 
 ### 客戶服務管理
@@ -107,7 +121,7 @@ npm start
 
 # 4. 開啟瀏覽器
 # http://localhost:5200
-# 首次啟動自動建立管理者 admin（密碼 admin），登入後請立即變更密碼
+# 首次啟動（無任何使用者時）會自動建立初始管理員並產生「一次性密碼」，密碼顯示於啟動終端機日誌（[auth] 已建立初始管理員...），登入後請立即變更密碼。或於啟動前以環境變數指定初始管理員（推薦）：BOOTSTRAP_ADMIN_EMP_ID=admin BOOTSTRAP_ADMIN_PASSWORD=YourP@ssw0rd npm start
 ```
 
 > 正式使用建議直接下載一鍵安裝包（見下節），免自行安裝 Node.js 環境。
