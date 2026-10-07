@@ -1,0 +1,36 @@
+# 依賴與建置
+node_modules/
+dist/
+coverage/
+.preview/
+
+# 執行期資料（首次啟動自動建庫）
+data/*
+!data/.gitkeep
+uploads/
+logs/
+
+# dist-server 執行期殘留（僅保留編譯產物）
+dist-server/data/
+dist-server/logs/
+dist-server/uploads/
+dist-server/config.json
+dist-server/config.json.bak*
+
+# 機密與授權
+keys/
+license.lic
+*.lic
+*.pem
+config.json
+*.bak*
+.env
+.env.*
+
+# 專案內部目錄（不隨公開版散佈）
+備份/
+文件/
+安裝程式/
+系統畫面/
+payload-*/
+_*

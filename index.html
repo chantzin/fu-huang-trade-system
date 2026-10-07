@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>輔凰商貿訂單暨應收帳款系統</title>
+  <!-- PWA：可安裝 + App Shell 快取（單機版，安全上下文 http://127.0.0.1:5200） -->
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#0f766e" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <!-- Chart.js：本地優先（P1-5，斷外網仍可用），CDN 僅作兜底 -->
+  <script src="/vendor/chart.umd.js"></script>
+  <script>
+    window.Chart || document.write(
+      '<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"><\/script>'
+    );
+  </script>
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/main.tsx"></script>
+  <!-- PWA Service Worker 註冊（僅本機/安全上下文生效） -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js').catch(function (err) {
+          console.warn('[PWA] Service Worker 註冊失敗：', err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>

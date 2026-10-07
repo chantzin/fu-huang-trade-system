@@ -1,0 +1,89 @@
+{
+  "port": 5200,
+  "host": "0.0.0.0",
+  "app_name": "輔凰商貿訂單暨應收帳款系統",
+  "_note": "本檔為範本。實際運行請複製成 config.json 後修改；tokenSecret 會在首次啟動自動產生。",
+
+  "auth": {
+    "provider": "local",
+    "tokenTtlDays": 7,
+    "tokenSecret": "",
+    "bootstrapAdmin": null,
+    "requireMfaRoles": [],
+    "shared": {
+      "_note": "provider 改為 shared 時才生效：把工號+密碼代理到 HR /api/auth/login 驗證，達到共用帳密。切換不改任何路由與 token 結構。",
+      "hrBaseUrl": "http://localhost:3000",
+      "hrLoginPath": "/api/auth/login"
+    }
+  },
+
+  "https": {
+    "enabled": false,
+    "port": 5443,
+    "certFile": "",
+    "keyFile": ""
+  },
+
+  "security": {
+    "httpLocalOnly": true,
+    "allowedRemoteCidrs": []
+  },
+
+  "roleMap": {
+    "_note": "HR 角色 → 本系統角色。本系統角色：admin(管理者) / manager(主管) / sales(業務) / accounting(會計)",
+    "admin": ["admin", "super"],
+    "manager": ["manager"],
+    "accounting": ["accounting", "finance", "會計"],
+    "sales": ["sales", "member", "user"]
+  },
+
+  "currency": {
+    "_note": "多幣別設定。base 為記帳本位幣（利潤/成本一律以本位幣計算）；rates 為預設匯率（1 外幣 = ? 本位幣），可在系統內「參數設定」或匯率歷程覆寫。",
+    "base": "TWD",
+    "supported": ["TWD", "USD", "RMB"],
+    "rates": { "TWD": 1, "USD": 31.5, "RMB": 4.35 }
+  },
+
+  "ar": {
+    "_note": "應收帳款推導規則。basis=month_end → 以「結帳月份月底」+termsDays 天為兌現日；basis=next_month_start → 以「結帳月份次月 1 日」+termsDays-1 天為兌現日。",
+    "basis": "month_end",
+    "defaultTermsDays": 60
+  },
+
+  "backup": {
+    "_note": "整庫熱備份（SQLite online backup API），一律備份全部資料表，不逐表列舉。dir 留空則用程式目錄下的 backup/。",
+    "dir": "",
+    "keep": 30,
+    "maxDays": 90,
+    "autoDaily": true,
+    "hour": 3,
+    "_deprecated_offsite": "【已棄用】異地備份改由資料庫 cloud_targets 表管理（UI：系統備份→雲端/異地目標；API：/api/cloud-backup）。下方 offsite* 欄位僅供 scripts/backup-db.mjs 的 3-2-1 熱備腳本「向後相容回退」使用（當 cloud_targets 無啟用目標時才讀取），新部署不應依賴。",
+    "offsiteEnabled": false,
+    "offsiteDir": "",
+    "offsiteKeep": 30
+  },
+
+  "cloud": {
+    "_note": "【P0 已上線】雲端/異地備份目標：localfolder（本機/網路資料夾）可直接在 UI 新增與管理；googledrive / onedrive（P1/P2）需自行於 Google Cloud / Azure 註冊 OAuth client 後，於目標的 auth 設定填入。實際目標存於 DB 的 cloud_targets 表，本區僅為未來憑證預留位置，填寫後由 UI 寫入加密欄位。",
+    "providers": {
+      "googledrive": { "clientId": "", "clientSecret": "" },
+      "onedrive": { "clientId": "", "clientSecret": "" }
+    }
+  },
+
+  "log": {
+    "_note": "檔案日誌：每日一檔 logs/app-YYYY-MM-DD.log，所有 console 輸出皆落檔。",
+    "dir": "",
+    "keepDays": 14
+  },
+
+  "fx": {
+    "_note": "台灣銀行牌告匯率串接：每日擷取下面列出的幣別買入/賣出匯率，保留 retentionDays 天（預設 60）。enabled=false 可關閉。",
+    "bank_tw": {
+      "enabled": true,
+      "currencies": ["USD", "CNY"],
+      "retentionDays": 60,
+      "fetchHour": 8
+    }
+  }
+}
