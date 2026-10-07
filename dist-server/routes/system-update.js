@@ -233,14 +233,28 @@ router.post('/apply', upload.single('pkg'), wrap(async (req, res) => {
     }
 
     // 7) 寫入新版 version.json + 紀錄
+    //   ⚠️ edition 一律保留現行版別（single/network）：更新包是通用套件，不應改變單機/網路設定。
     const newVer = {
       version: mf.version,
       buildDate: new Date().toISOString(),
-      edition: mf.name || cur.edition,
+      edition: cur.edition,
       channel: mf.channel || cur.channel || 'stable',
       updatedFrom: cur.version,
     };
     fs.writeFileSync(VERSION_FILE, JSON.stringify(newVer, null, 2), 'utf8');
+
+    // 7.5) ★權限修正（v1.0.49）：授權本機使用者對安裝目錄的「修改」權限。
+    //      適用情境：安裝於 Program Files 的系統，一般使用者啟動看門狗會因
+    //      「寫 logs / config.json 被拒」而無聲退出（rc=1）。
+    //      以管理員 / SYSTEM 身分套用更新包時，一併修正 ACL；之後一般使用者即可正常啟動。
+    //      若系統以一般權限執行（隨身版 / 使用者自有目錄），此步驟失敗僅警示、不中斷。
+    try {
+      if (process.platform === 'win32') {
+        const r = trySh(`icacls "${APP_ROOT}" /grant Users:(OI)(CI)M /T /C`);
+        if (r.ok) console.log('[system-update] ✓ 已授權 Users 對安裝目錄的修改權限');
+        else console.warn('[system-update] ⚠️ icacls 授權未完成（一般權限執行可忽略）：' + r.out.trim().slice(0, 150));
+      }
+    } catch (e) { console.warn('[system-update] ⚠️ icacls 略過：' + e.message); }
 
     ensureTable();
     db.prepare(`INSERT INTO ${HISTORY_TABLE} (from_version, to_version, package_name, description, backup_path, applied_at, operator)
