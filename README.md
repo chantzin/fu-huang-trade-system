@@ -221,6 +221,6 @@ npm start
 
 * 公司：輔凰有限公司
 
-* 信箱：（待填）
+* 信箱：hello@fuhuang.com.tw
 
-* 網站：（待填）
+* 網站：www.fuhuang.com.tw
